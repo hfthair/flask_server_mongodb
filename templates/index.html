@@ -1,0 +1,17 @@
+{% extends "header_layout.html" %}
+{% block body %}
+<p/>
+    <a href="create_meeting"> 新建 </a>
+<p/>
+{% for key in src %}
+<li>
+    <a href="{{ url_for('meeting_info', uid=key) }}"> {{src.get(key).get("title")}} </a>
+    <p/><b>{{src.get(key).get("creator") + "  " + src.get(key).get("time")}}</b>
+    <p/>
+    <form action="delete_meeting" method="post">
+        <button type="submit" name="meeting_id" value="{{key}}">删除</button>
+    </form>
+    <!--<p/><a href="{{ url_for('delete_meeting', uid=key) }}"> 删除 </a>-->
+</li>
+{% endfor %}
+{% endblock %}

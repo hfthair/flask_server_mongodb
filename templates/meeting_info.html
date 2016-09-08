@@ -1,0 +1,101 @@
+{% extends "header_layout.html" %}
+{% block body %}
+<h2>{{ src.get('title') }} </h2>
+<b> {{ src.get('_id').generation_time }} </b>
+<b> {{ src.get('creator')}} </b>
+<b/>
+<p/>
+<li>讲稿</li>
+{% for key in src.get("main_files") %}
+<table>
+    <tr>
+        <td>
+            <a href="{{url_for('download_file', file_id=key)}}"> {{src['main_files'][key][1]}} </a>
+        </td>
+        <td>
+            {{src['main_files'][key][0]}}
+        </td>
+        <td>
+            <form action="/delete_usr_file" method=post>
+                <input type="hidden" name="file" value="{{ key }}"/>
+                <button type="submit" name="meeting" value="{{src.get('_id')}}">删除</button>
+            </form>
+        </td>
+    </tr>
+</table>
+{%endfor%}
+<form action="/upload_usr_file" method=post enctype=multipart/form-data>
+    <input type="file" name="file" required/>
+    <button type="submit" name="meeting" value="{{src.get('_id')}}">上传</button>
+</form>
+
+<p/>
+<li>参考</li>
+{% for key in src.get("ref_files") %}
+<table>
+    <tr>
+        <td>
+            <a href="{{url_for('download_file', file_id=key)}}"> {{src['ref_files'][key][1]}} </a>
+        </td>
+        <td>
+            {{src['ref_files'][key][0]}}
+        </td>
+        <td>
+            <form action="/delete_ref_file" method=post>
+                <input type="hidden" name="file" value="{{ key }}"/>
+                <button type="submit" name="meeting" value="{{src.get('_id')}}">删除</button>
+            </form>
+        </td>
+    </tr>
+</table>
+{%endfor%}
+<form action="/upload_ref_file" method=post enctype=multipart/form-data>
+    <input type="file" name="file" required/>
+    <button type="submit" name="meeting" value="{{src.get('_id')}}">上传</button>
+</form>
+
+<p/>
+<li>记录</li>
+{% for key in src.get("record") %}
+<table>
+    <tr>
+        <td>
+            {{src['record'][key][1]}}
+        </td>
+        <td>
+            {{src['record'][key][0]}}
+        </td>
+        <td>
+            {{src['record'][key][2]}}
+        </td>
+    </tr>
+</table>
+{%endfor%}
+<form action="/update_record" method=post>
+    <input type="text" name="data" required/>
+    <button type="submit" name="meeting_id" value="{{src.get('_id')}}">提交</button>
+</form>
+
+
+<p/>
+<li>评论</li>
+{% for key in src.get("comments") %}
+<table>
+    <tr>
+        <td>
+            {{src['comments'][key][1]}}
+        </td>
+        <td>
+            {{src['comments'][key][0]}}
+        </td>
+        <td>
+            {{src['comments'][key][2]}}
+        </td>
+    </tr>
+</table>
+{%endfor%}
+<form action="/update_comments" method=post>
+    <input type="text" name="data" required/>
+    <button type="submit" name="meeting_id" value="{{src.get('_id')}}">提交</button>
+</form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "header_layout.html" %}
+ {% block body %}
+<div align="center" valign="center">
+    <form action="/create_meeting" method=post>
+        <table>
+                <tr>
+                    <th>
+                        <h2>创 建</h2>
+                    </th>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <input required type="text" name="meeting_name" aria-label="名字" placeholder="名字">
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <button type="submit">创建</button>
+                    </td>
+                </tr>
+            </table>
+    </form>
+</div>
+{% endblock %}
+

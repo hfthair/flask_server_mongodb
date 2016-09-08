@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <header>
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>yihui: make it easy, make it fun!</title>
+        <table bgcolor="#C0C0C0">
+            <tr>
+                <td>
+                    <a href="{{url_for('index')}}"> 首页 </a>
+                </td>
+                <td>
+                    <a href="{{url_for('web_help')}}"> 帮助 </a>
+                </td>
+                <td>
+                    <a href="{{url_for('web_about')}}"> 关于 </a>
+                </td>
+                <td>
+                    <a href="{{url_for('web_contact')}}"> 联系我们 </a>
+                </td>
+                <td>
+                    {% if current_user and current_user.name and current_user.name != ''%}
+                    <h2>你好, {{ current_user.name }}</h2>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </header>
+    <body>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>
+                {{ message.decode('utf-8') }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+    {% block body %}{% endblock %}
+    </body>
+</html>

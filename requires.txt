@@ -1,0 +1,2 @@
+linux: mongoDB
+py2: flask flask-login pymongo
