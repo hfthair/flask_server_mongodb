@@ -1,20 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
-from flask import (Flask, request, redirect, Response, url_for, 
-                    send_from_directory, jsonify, send_file, 
-                    render_template, flash
-                    )
-
+import os, uuid, json, time, shutil
+import traceback
+import pptx
 from flask_pymongo import PyMongo
 from gridfs import GridFS
 from bson.objectid import ObjectId
 from bson import json_util
-
-# from collections import OrderedDict
-import os, uuid, json, time, shutil
-import traceback
-
+from flask import (Flask, request, redirect, Response, url_for, 
+                    send_from_directory, jsonify, send_file, 
+                    render_template, flash
+                    )
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 25<<20  # max upload size < 16M
@@ -32,7 +28,6 @@ ctx.pop()
 
 MEETING_MAP = {}
 ALLOWED_EXT = ['.pdf', '.doc', '.ppt', '.pptx', '.docx', '.xls', '.xlsx', '.caj', '.txt', '.html', '.rec', '.commonts']
-
 
 #############################################################################################################
 ############################################### login #######################################################
@@ -67,7 +62,6 @@ class User(UserMixin):
             isactive = res.get('active', True)
             return User(id, name, passwd, isactive)
 
-
     @staticmethod
     def get_from_name(name):
         res = db.usr.find_one(dict(usr=name))
@@ -80,7 +74,6 @@ class User(UserMixin):
             if id != '' and passwd != '':
                 #id.generation_time
                 return User(str(id), name, passwd, isactive)
-            
 
     @staticmethod
     def regist_new_usr(_usr, _passwd):
@@ -94,7 +87,7 @@ class User(UserMixin):
             return False
         else:
             return True
-    
+
     #test port
     @staticmethod
     def get_all_usr_name():
@@ -103,8 +96,6 @@ class User(UserMixin):
         for i in dr:
             res.append(i.get('usr', ''))
         return res
-
-
 
 @login_manager.user_loader
 def load_user(id):
@@ -131,8 +122,8 @@ def load_user(request):
             return cUser
     return None
 
-#############################################################################################################
-import pptx
+#################################### login end ##########################################
+
 def pptx_to_desc(f):
     text_runs = []
     try:
@@ -167,7 +158,6 @@ def secure_name(s):
     s = s.replace('[', '_')
     s = s.replace(']', '_')
     return s
-
 
 def get_meeting_list(uid=''):
     all_meeting = {}
@@ -237,7 +227,6 @@ def op_meeting_delete(meeting_id):
         traceback.print_exc()
     return 0
 
-
 def op_meeting_find_by_id(meeting_id):
     try:
         objid = ObjectId(meeting_id)
@@ -267,7 +256,6 @@ def op_meeting_add_main_file(meeting_id, file, filename, author):
     except:
         traceback.print_exc()
     return 0
-
 
 def op_meeting_add_ref_file(meeting_id, file, filename, author):
     try:
@@ -340,7 +328,6 @@ def op_meeting_add_commont(meeting_id, author, content, linkid=''):
         traceback.print_exc()
     return 0
 
-
 def __redirect_url():
     return request.args.get('next') or url_for('index') #request.referrer
 
@@ -365,7 +352,6 @@ def api_register():
         if __inner_register():
             return 'success'
     return 'failed'
-
 
 def __inner_login():
     username = request.form.get('username', '')
@@ -415,13 +401,11 @@ def index():
     rr = get_meeting_list()
     return render_template('index.html', src=rr)
 
-
 @app.route('/api/listmeeting')
 @login_required
 def listmeeting():
     rr = get_meeting_list()
     return jsonify(**rr)
-
 
 @app.route('/meeting_info/<uid>')
 @login_required
@@ -443,7 +427,6 @@ def append_timestr_to_file_array(files):
             # files[key].append(t)
         except:
             traceback.print_exc()
-
 
 @app.route('/api/meeting_info/<uid>')
 @login_required
@@ -498,7 +481,6 @@ def api_create_meeting():
     else:
         return 'failed'
 
-
 def __inner_delete_meeting():
     mid = request.form.get('meeting_id')
     deleter = current_user.name
@@ -518,7 +500,6 @@ def delete_meeting():
         return redirect(request.referrer)
     else:
         return redirect(url_for('index'))
-        
 
 @app.route('/api/delete_meeting', methods=['POST'])
 @login_required
@@ -606,8 +587,6 @@ def api_upload_ref_file():
             return 'success'
     return 'failed'
 
-
-
 def __inner_delete_usr_file():
     mid = request.form.get('meeting')
     deletor = current_user.name
@@ -631,7 +610,6 @@ def delete_usr_file():
     else:
         return redirect(url_for('index'))
 
-        
 @app.route('/api/delete_usr_file', methods=['POST'])
 @login_required
 def api_delete_usr_file():
@@ -664,7 +642,6 @@ def delete_ref_file():
     else:
         return redirect(url_for('index'))
 
-        
 @app.route('/api/delete_ref_file', methods=['POST'])
 @login_required
 def api_delete_ref_file():
@@ -673,8 +650,6 @@ def api_delete_ref_file():
         if cnt != None and cnt == 1:
             return 'success'
     return 'failed'
-
-
 
 @app.route('/download_file', methods=['GET', 'POST'])
 def download_file():
